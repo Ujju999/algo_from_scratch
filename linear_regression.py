@@ -1,15 +1,14 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 class LinearRegression:
     def __init__(self,learning_rate = 0.01,tolerance = 1e-6, n_steps = 1000):
         self.learning_rate = learning_rate
         self.tolerance = tolerance
         self.n_steps = n_steps
-
         self.w = None
         self.b = None
-
         self.loss = []
     
     def fit(self,X,y):
@@ -29,11 +28,8 @@ class LinearRegression:
             error = y_hat - y
 
             loss = np.mean(np.square(error))
-
             abs_loss_diff = abs(loss - prev_loss)
-
             self.loss.append(loss)
-
             if abs_loss_diff < self.tolerance:
                 print(f"Converged at iteration {i}, Final Loss : {loss:.6f}")
                 break
@@ -68,6 +64,19 @@ class LinearRegression:
 
         r2= 1 - np.divide(ss_residual,ss_total)
         return r2
+
+    def plot_loss(self):
+        
+        if not self.loss:
+            print("Warning: No training history to plot.")
+        
+        plt.plot(self.loss)
+        plt.yscale('log')
+        plt.xlabel('num of iterations')
+        plt.ylabel('Loss (Log Scale)')
+        plt.title("Linear Regression loss plot")
+        plt.grid(True)
+        plt.show()
 
 if __name__ == "__main__":
     np.random.seed(42)
