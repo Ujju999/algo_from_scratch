@@ -41,13 +41,10 @@ class LogisticRegression:
             p_hat = self.sigmoid(X @ self.w + self.b)
 
             error = p_hat - y
-
             loss = self.bce_loss(y, p_hat)
 
             self.loss.append(loss)
-
             abs_loss_diff = abs(prev_loss - loss)
-
             if abs_loss_diff < self.tolerance:
                 print(f" Converged at iteration {i}, Final Loss: {loss:.6f}")
                 break
@@ -60,22 +57,35 @@ class LogisticRegression:
             self.w -= self.learning_rate * dw
             self.b -= self.learning_rate * db
 
-            return self
+        return self
 
-        def predict_proba(self,X):
-            if isinstance(X,pd.DataFrame):
-                X = X.to_numpy()
+    def predict_proba(self,X):
+        if isinstance(X,pd.DataFrame):
+            X = X.to_numpy()
 
-            return self.sigmoid(X @ self.w + self.b)
+        return self.sigmoid(X @ self.w + self.b)
 
-        def predict(self, X):
-            p_hat = self.predict_proba(X)
+    def predict(self, X):
+        p_hat = self.predict_proba(X)
 
-            return (p_hat > 0.5).astype(int)
+        return (p_hat > 0.5).astype(int)
 
-        def score(self, X, y):
-            if isinstance(y, pd.Series):
-                y = y.to_numpy()
-            y_pred = self.predict(X)
+    def score(self, X, y):
+        if isinstance(y, pd.Series):
+            y = y.to_numpy()
+        y_pred = self.predict(X)
 
-            return np.mean(y_pred == y)
+        return np.mean(y_pred == y)
+
+    def plot_loss(self):
+        
+        if not self.loss:
+            print("Warning: No training history to plot.")
+        
+        plt.plot(self.loss)
+        plt.yscale('log')
+        plt.xlabel('num of iterations')
+        plt.ylabel('Loss (Log Scale)')
+        plt.title("Linear Regression loss plot")
+        plt.grid(True)
+        plt.show()
